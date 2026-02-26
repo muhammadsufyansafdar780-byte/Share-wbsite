@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounting Management System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <h2>📚 Accounting Pro</h2>
+        </div>
+        <nav class="nav-menu">
+            <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+                <span class="icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('ledger')">
+                <span class="icon">📖</span>
+                <span>Ledger</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('transactions')">
+                <span class="icon">💸</span>
+                <span>Transactions</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('invoices')">
+                <span class="icon">🧾</span>
+                <span>Invoices</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('reports')">
+                <span class="icon">📈</span>
+                <span>Reports</span>
+            </a>
+            <a href="#" class="nav-item" onclick="showSection('accounts')">
+                <span class="icon">🏦</span>
+                <span>Accounts</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active">
+            <div class="header">
+                <h1>Dashboard</h1>
+                <p class="subtitle">Financial Overview</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-info">
+                        <div class="stat-label">Total Revenue</div>
+                        <div class="stat-value revenue" id="totalRevenue">$0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💸</div>
+                    <div class="stat-info">
+                        <div class="stat-label">Total Expenses</div>
+                        <div class="stat-value expense" id="totalExpenses">$0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-info">
+                        <div class="stat-label">Net Profit</div>
+                        <div class="stat-value profit" id="netProfit">$0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏦</div>
+                    <div class="stat-info">
+                        <div class="stat-label">Cash Balance</div>
+                        <div class="stat-value" id="cashBalance">$0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>Recent Transactions</h3>
+                    <div id="recentTransactions" class="transaction-list"></div>
+                </div>
+                <div class="card">
+                    <h3>Quick Summary</h3>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <span>Total Invoices:</span>
+                            <span id="totalInvoices">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Pending Payments:</span>
+                            <span id="pendingPayments">$0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Total Accounts:</span>
+                            <span id="totalAccounts">0</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>This Month:</span>
+                            <span id="monthlyProfit">$0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ledger Section -->
+        <section id="ledger" class="section">
+            <div class="header">
+                <h1>General Ledger</h1>
+                <p class="subtitle">Complete transaction history</p>
+            </div>
+
+            <div class="card">
+                <div class="ledger-controls">
+                    <select id="ledgerFilter" onchange="filterLedger()">
+                        <option value="all">All Transactions</option>
+                        <option value="debit">Debit Only</option>
+                        <option value="credit">Credit Only</option>
+                    </select>
+                    <input type="date" id="ledgerDateFrom" onchange="filterLedger()">
+                    <input type="date" id="ledgerDateTo" onchange="filterLedger()">
+                </div>
+                <div id="ledgerTable" class="ledger-table"></div>
+            </div>
+        </section>
+
+        <!-- Transactions Section -->
+        <section id="transactions" class="section">
+            <div class="header">
+                <h1>Transactions</h1>
+                <p class="subtitle">Record income and expenses</p>
+            </div>
+
+            <div class="transaction-container">
+                <div class="card">
+                    <h3>Add New Transaction</h3>
+                    <div class="form-group">
+                        <label>Transaction Type</label>
+                        <select id="transactionType">
+                            <option value="income">Income (Credit)</option>
+                            <option value="expense">Expense (Debit)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Account</label>
+                        <select id="transactionAccount"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount</label>
+                        <input type="number" id="transactionAmount" placeholder="Enter amount" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" id="transactionDescription" placeholder="Transaction description">
+                    </div>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <input type="date" id="transactionDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Reference Number</label>
+                        <input type="text" id="transactionRef" placeholder="Optional reference">
+                    </div>
+                    <button class="btn-primary" onclick="addTransaction()">Add Transaction</button>
+                </div>
+
+                <div class="card">
+                    <h3>Transaction History</h3>
+                    <div id="transactionHistory" class="transaction-history"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Invoices Section -->
+        <section id="invoices" class="section">
+            <div class="header">
+                <h1>Invoices</h1>
+                <p class="subtitle">Create and manage invoices</p>
+            </div>
+
+            <div class="invoice-container">
+                <div class="card">
+                    <h3>Create Invoice</h3>
+                    <div class="form-group">
+                        <label>Client Name</label>
+                        <input type="text" id="invoiceClient" placeholder="Client name">
+                    </div>
+                    <div class="form-group">
+                        <label>Invoice Number</label>
+                        <input type="text" id="invoiceNumber" placeholder="INV-001">
+                    </div>
+                    <div class="form-group">
+                        <label>Amount</label>
+                        <input type="number" id="invoiceAmount" placeholder="Invoice amount" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Due Date</label>
+                        <input type="date" id="invoiceDueDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" id="invoiceDescription" placeholder="Services/Products">
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="invoiceStatus">
+                            <option value="pending">Pending</option>
+                            <option value="paid">Paid</option>
+                            <option value="overdue">Overdue</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" onclick="createInvoice()">Create Invoice</button>
+                </div>
+
+                <div class="card">
+                    <h3>Invoice List</h3>
+                    <div id="invoiceList" class="invoice-list"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reports Section -->
+        <section id="reports" class="section">
+            <div class="header">
+                <h1>Financial Reports</h1>
+                <p class="subtitle">Generate accounting reports</p>
+            </div>
+
+            <div class="report-cards">
+                <div class="report-card" onclick="generateReport('balance-sheet')">
+                    <div class="report-icon">📊</div>
+                    <h3>Balance Sheet</h3>
+                    <p>Assets, Liabilities & Equity</p>
+                </div>
+                <div class="report-card" onclick="generateReport('profit-loss')">
+                    <div class="report-icon">💹</div>
+                    <h3>Profit & Loss</h3>
+                    <p>Income Statement</p>
+                </div>
+                <div class="report-card" onclick="generateReport('cash-flow')">
+                    <div class="report-icon">💰</div>
+                    <h3>Cash Flow</h3>
+                    <p>Cash movement analysis</p>
+                </div>
+                <div class="report-card" onclick="generateReport('trial-balance')">
+                    <div class="report-icon">⚖️</div>
+                    <h3>Trial Balance</h3>
+                    <p>Debit & Credit summary</p>
+                </div>
+            </div>
+
+            <div class="card" id="reportOutput">
+                <h3>Report Output</h3>
+                <div id="reportContent" class="report-content"></div>
+            </div>
+        </section>
+
+        <!-- Accounts Section -->
+        <section id="accounts" class="section">
+            <div class="header">
+                <h1>Chart of Accounts</h1>
+                <p class="subtitle">Manage account categories</p>
+            </div>
+
+            <div class="accounts-container">
+                <div class="card">
+                    <h3>Add New Account</h3>
+                    <div class="form-group">
+                        <label>Account Name</label>
+                        <input type="text" id="accountName" placeholder="Account name">
+                    </div>
+                    <div class="form-group">
+                        <label>Account Type</label>
+                        <select id="accountType">
+                            <option value="asset">Asset</option>
+                            <option value="liability">Liability</option>
+                            <option value="equity">Equity</option>
+                            <option value="revenue">Revenue</option>
+                            <option value="expense">Expense</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Account Code</label>
+                        <input type="text" id="accountCode" placeholder="e.g., 1001">
+                    </div>
+                    <div class="form-group">
+                        <label>Opening Balance</label>
+                        <input type="number" id="accountBalance" placeholder="0.00" step="0.01">
+                    </div>
+                    <button class="btn-primary" onclick="addAccount()">Add Account</button>
+                </div>
+
+                <div class="card">
+                    <h3>Account List</h3>
+                    <div id="accountList" class="account-list"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
